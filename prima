@@ -1,0 +1,93 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Calculator, MessageCircle } from "lucide-react";
+
+// Logo da Prima (data URL incorporada)
+const LOGO_PRIMA = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAkACQAAD/4QECRXhpZgAATU0AKgAAAAgABwEOAAIAAAALAAA...";
+
+// Função PMT (Sistema Price)
+function pmt(rate, nper, pv) {
+  if (rate === 0) return -(pv / nper);
+  const pow = Math.pow(1 + rate, nper);
+  return -(pv * (rate * pow)) / (pow - 1);
+}
+
+export default function FinancingCalculator() {
+  const [valor, setValor] = useState(10000);
+  const [taxa, setTaxa] = useState(2);
+  const [parcelas, setParcelas] = useState(12);
+
+  const taxaDecimal = (taxa || 0) / 100;
+  const parcela = pmt(taxaDecimal, parcelas, valor);
+
+  const formatBRL = (num) =>
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(Math.abs(num || 0));
+
+  const whatsappLink = "https://wa.me/5531986933166"; // TROQUE PELO SEU NÚMERO
+
+  return (
+    <div className="min-h-screen bg-[#F5F6FA] p-6 flex items-start justify-center">
+      <Card className="w-full max-w-lg rounded-2xl shadow-sm">
+        <CardContent className="p-6 space-y-5">
+          <div className="flex flex-col items-center gap-3">
+            <img src={LOGO_PRIMA} alt="Prima" className="h-14 object-contain" />
+            <h1 className="text-xl font-semibold text-[#1B1F3B]">Calculadora Financeira — Prima</h1>
+            <p className="text-sm text-gray-600 text-center">
+              Simule sua parcela em segundos e fale direto com um consultor.
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Valor financiado (R$)</label>
+            <Input
+              type="number"
+              value={valor}
+              onChange={(e) => setValor(Number(e.target.value))}
+              placeholder="Ex: 10000"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Taxa de juros ao mês (%)</label>
+            <Input
+              type="number"
+              step="0.01"
+              value={taxa}
+              onChange={(e) => setTaxa(Number(e.target.value))}
+              placeholder="Ex: 2"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Número de parcelas</label>
+            <Input
+              type="number"
+              value={parcelas}
+              onChange={(e) => setParcelas(Number(e.target.value))}
+              placeholder="Ex: 12"
+            />
+          </div>
+
+          <div className="bg-[#E8EEFF] border border-[#D6E0FF] rounded-xl p-4">
+            <p className="text-sm text-[#1B1F3B]">Parcela estimada (Sistema Price):</p>
+            <p className="text-2xl font-bold text-[#1B1F3B] mt-1">
+              {formatBRL(parcela)}
+            </p>
+          </div>
+
+          <Button
+            className="w-full bg-[#1B1F3B] hover:bg-[#14172C]"
+            onClick={() => window.open(whatsappLink, "_blank")}
+          >
+            <MessageCircle className="mr-2 h-4 w-4" /> Falar com consultor no WhatsApp
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
