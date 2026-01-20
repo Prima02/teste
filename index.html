@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { margin: 0; background-color: #0A0510; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         input[type="radio"] { display: none; }
@@ -20,18 +21,18 @@
 
         function CalculadoraPrimaPay() {
             const [valor, setValor] = useState("");
-            const [tipoGarantia, setTipoGarantia] = useState("com"); // "com" ou "sem"
+            const [tipoGarantia, setTipoGarantia] = useState("com");
             const [meses, setMeses] = useState("");
             const [prestacao, setPrestacao] = useState(null);
 
             const ROXO = "#883CEA";
             const ROSA = "#CE17CF";
             const LARANJA = "#F58634";
+            const WHATSAPP = "#25D366";
 
-            // Defina aqui as taxas mensais para cada opção
             const TAXAS = {
-                com: 1.49, // Exemplo: 1,49% ao mês
-                sem: 4.99  // Exemplo: 4,99% ao mês
+                com: 1.49,
+                sem: 4.99
             };
 
             const formatarMoeda = (v) => {
@@ -47,9 +48,7 @@
                 const pv = parseFloat(valor.replace(/\./g, "").replace(",", "."));
                 const i = TAXAS[tipoGarantia] / 100;
                 const n = parseInt(meses);
-
                 if (!pv || !i || !n) return;
-
                 const pmt = pv * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
                 setPrestacao(pmt.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
             };
@@ -63,20 +62,18 @@
                 input: { width: "100%", padding: "14px", borderRadius: "12px", border: `1px solid ${ROXO}55`, background: "#0A0510", color: "white", fontSize: "16px", boxSizing: "border-box", outline: "none" },
                 selecaoContainer: { display: "flex", gap: "10px", marginTop: "5px" },
                 opcao: (ativo) => ({
-                    flex: 1,
-                    padding: "12px",
-                    borderRadius: "10px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "bold",
+                    flex: 1, padding: "12px", borderRadius: "10px", cursor: "pointer", fontSize: "13px", fontWeight: "bold",
                     border: `1px solid ${ativo ? ROSA : ROXO + "44"}`,
                     background: ativo ? `linear-gradient(45deg, ${ROXO}, ${ROSA})` : "transparent",
-                    color: "white",
-                    transition: "0.3s"
+                    color: "white", transition: "0.3s"
                 }),
                 btnCalcular: { width: "100%", padding: "16px", marginTop: "25px", borderRadius: "12px", border: "none", background: `linear-gradient(90deg, ${ROXO}, ${ROSA})`, color: "white", fontWeight: "bold", fontSize: "16px", cursor: "pointer" },
                 resultado: { marginTop: "20px", padding: "15px", borderRadius: "12px", background: `${ROXO}15`, border: `1px solid ${ROSA}` },
-                btnWhats: { width: "100%", padding: "12px", marginTop: "15px", borderRadius: "12px", border: `2px solid ${LARANJA}`, background: "transparent", color: "white", fontWeight: "bold", cursor: "pointer" }
+                btnWhats: { 
+                    width: "100%", padding: "14px", marginTop: "15px", borderRadius: "12px", border: `2px solid ${WHATSAPP}`, 
+                    background: "transparent", color: WHATSAPP, fontWeight: "bold", cursor: "pointer", fontSize: "15px",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" 
+                }
             };
 
             return (
@@ -89,15 +86,8 @@
                     
                     <label style={estilos.label}>Tipo de Crédito</label>
                     <div style={estilos.selecaoContainer}>
-                        <div style={estilos.opcao(tipoGarantia === "com")} onClick={() => setTipoGarantia("com")}>
-                            COM GARANTIA
-                        </div>
-                        <div style={estilos.opcao(tipoGarantia === "sem")} onClick={() => setTipoGarantia("sem")}>
-                            SEM GARANTIA
-                        </div>
-                    </div>
-                    <div style={{color: "white", fontSize: "11px", opacity: 0.5, textAlign: "left", marginTop: "5px"}}>
-                        Taxa aplicada: {TAXAS[tipoGarantia]}% ao mês
+                        <div style={estilos.opcao(tipoGarantia === "com")} onClick={() => setTipoGarantia("com")}>COM GARANTIA</div>
+                        <div style={estilos.opcao(tipoGarantia === "sem")} onClick={() => setTipoGarantia("sem")}>SEM GARANTIA</div>
                     </div>
                     
                     <label style={estilos.label}>Prazo (Meses)</label>
@@ -112,7 +102,10 @@
                         </div>
                     )}
                     
-                    <button style={estilos.btnWhats} onClick={abrirWhats}>Falar com Consultor</button>
+                    <button style={estilos.btnWhats} onClick={abrirWhats}>
+                        <i className="fab fa-whatsapp" style={{fontSize: "20px"}}></i>
+                        Falar no WhatsApp
+                    </button>
                 </div>
             );
         }
