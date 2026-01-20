@@ -10,18 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { margin: 0; background-color: #0A0510; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        .btn-interativo {
-            transition: all 0.2s ease;
-        }
-        .btn-interativo:hover {
-            filter: brightness(1.1);
-            transform: translateY(-1px);
-        }
-        .btn-interativo:active {
-            transform: translateY(1px);
-            filter: brightness(0.9);
-        }
+        .btn-interativo { transition: all 0.2s ease; }
+        .btn-interativo:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-interativo:active { transform: translateY(1px); filter: brightness(0.9); }
     </style>
 </head>
 <body>
@@ -41,7 +32,6 @@
             const LARANJA = "#F58634";
             const WHATSAPP_VERDE = "#25D366";
 
-            // TAXAS ATUALIZADAS: 5% e 10%
             const TAXAS = {
                 com: 5.0,
                 sem: 10.0
@@ -62,8 +52,11 @@
                 const n = parseInt(meses);
                 if (!pv || !i || !n) return;
                 
-                // Fórmula Price
-                const pmt = pv * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
+                // LÓGICA DE JUROS SIMPLES: J = C * i * t
+                const jurosTotal = pv * i * n;
+                const montanteTotal = pv + jurosTotal;
+                const pmt = montanteTotal / n;
+                
                 setPrestacao(pmt.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
             };
 
@@ -86,8 +79,7 @@
                 btnWhats: { 
                     width: "100%", padding: "16px", marginTop: "15px", borderRadius: "12px", border: "none", 
                     background: WHATSAPP_VERDE, color: "white", fontWeight: "bold", cursor: "pointer", fontSize: "16px",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-                    boxShadow: "0 4px 15px rgba(37, 211, 102, 0.2)"
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px"
                 }
             };
 
@@ -104,6 +96,9 @@
                         <div style={estilos.opcao(tipoGarantia === "com")} onClick={() => setTipoGarantia("com")}>COM GARANTIA</div>
                         <div style={estilos.opcao(tipoGarantia === "sem")} onClick={() => setTipoGarantia("sem")}>SEM GARANTIA</div>
                     </div>
+                    <div style={{color: "white", fontSize: "10px", opacity: 0.5, textAlign: "left", marginTop: "4px"}}>
+                        *Juros Simples aplicados ao mês.
+                    </div>
                     
                     <label style={estilos.label}>Prazo (Meses)</label>
                     <input style={estilos.input} type="number" placeholder="Ex: 12" value={meses} onChange={e => setMeses(e.target.value)} />
@@ -112,7 +107,7 @@
                     
                     {prestacao && (
                         <div style={estilos.resultado}>
-                            <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Parcela Mensal Estimada:</div>
+                            <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Parcela Mensal (Juros Simples):</div>
                             <div style={{color: LARANJA, fontSize: "26px", fontWeight: "bold"}}>{prestacao}</div>
                         </div>
                     )}
