@@ -8,15 +8,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            background-color: #0A0510;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+        body { margin: 0; background-color: #0A0510; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     </style>
 </head>
 <body>
@@ -31,114 +23,82 @@
             const [meses, setMeses] = useState("");
             const [prestacao, setPrestacao] = useState(null);
 
-            // Cores oficiais da PrimaPay
             const ROXO = "#883CEA";
             const ROSA = "#CE17CF";
             const LARANJA = "#F58634";
 
+            // Formata número para Moeda BRL enquanto digita
+            const formatarMoeda = (v) => {
+                v = v.replace(/\D/g, "");
+                v = (v / 100).toFixed(2) + "";
+                v = v.replace(".", ",");
+                v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+                v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
+                return v !== "0,00" ? v : "";
+            };
+
             const calcular = () => {
-                const pv = parseFloat(valor);
-                const i = parseFloat(taxa) / 100;
+                // Converte string BRL de volta para número puro para o cálculo
+                const pv = parseFloat(valor.replace(/\./g, "").replace(",", "."));
+                const i = parseFloat(taxa.replace(",", ".")) / 100;
                 const n = parseInt(meses);
+
                 if (!pv || !i || !n) return;
+
                 const pmt = pv * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
-                setPrestacao(pmt.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                setPrestacao(pmt.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
             };
 
             const abrirWhats = () => window.open("https://wa.me/5531986933166", "_blank");
 
             const estilos = {
-                card: {
-                    background: "#160F24",
-                    width: "360px",
-                    padding: "30px",
-                    borderRadius: "24px",
-                    boxShadow: "0 20px 50px rgba(0,0,0,0.7)",
-                    textAlign: "center",
-                    border: `1px solid ${ROXO}33`
-                },
-                logo: {
-                    maxHeight: "60px",
-                    marginBottom: "20px"
-                },
-                label: {
-                    display: "block",
-                    textAlign: "left",
-                    color: LARANJA,
-                    fontSize: "11px",
-                    fontWeight: "bold",
-                    marginTop: "15px",
-                    marginBottom: "5px",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px"
-                },
-                input: {
-                    width: "100%",
-                    padding: "14px",
-                    borderRadius: "12px",
-                    border: `1px solid ${ROXO}55`,
-                    background: "#0A0510",
-                    color: "white",
-                    fontSize: "16px",
-                    boxSizing: "border-box",
-                    outline: "none"
-                },
-                btnCalcular: {
-                    width: "100%",
-                    padding: "16px",
-                    marginTop: "25px",
-                    borderRadius: "12px",
-                    border: "none",
-                    background: `linear-gradient(90deg, ${ROXO}, ${ROSA})`,
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    cursor: "pointer",
-                    boxShadow: `0 8px 20px ${ROXO}44`
-                },
-                resultado: {
-                    marginTop: "20px",
-                    padding: "15px",
-                    borderRadius: "12px",
-                    background: `${ROXO}15`,
-                    border: `1px solid ${ROSA}`
-                },
-                btnWhats: {
-                    width: "100%",
-                    padding: "12px",
-                    marginTop: "15px",
-                    borderRadius: "12px",
-                    border: `2px solid ${LARANJA}`,
-                    background: "transparent",
-                    color: "white",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    fontSize: "14px"
-                }
+                card: { background: "#160F24", width: "360px", padding: "30px", borderRadius: "24px", boxShadow: "0 20px 50px rgba(0,0,0,0.7)", textAlign: "center", border: `1px solid ${ROXO}33` },
+                logo: { maxHeight: "60px", marginBottom: "20px" },
+                label: { display: "block", textAlign: "left", color: LARANJA, fontSize: "11px", fontWeight: "bold", marginTop: "15px", marginBottom: "5px", textTransform: "uppercase" },
+                input: { width: "100%", padding: "14px", borderRadius: "12px", border: `1px solid ${ROXO}55`, background: "#0A0510", color: "white", fontSize: "16px", boxSizing: "border-box", outline: "none" },
+                btnCalcular: { width: "100%", padding: "16px", marginTop: "25px", borderRadius: "12px", border: "none", background: `linear-gradient(90deg, ${ROXO}, ${ROSA})`, color: "white", fontWeight: "bold", fontSize: "16px", cursor: "pointer" },
+                resultado: { marginTop: "20px", padding: "15px", borderRadius: "12px", background: `${ROXO}15`, border: `1px solid ${ROSA}` },
+                btnWhats: { width: "100%", padding: "12px", marginTop: "15px", borderRadius: "12px", border: `2px solid ${LARANJA}`, background: "transparent", color: "white", fontWeight: "bold", cursor: "pointer", fontSize: "14px" }
             };
 
             return (
                 <div style={estilos.card}>
-                    {/* Referência ao arquivo que você subiu */}
                     <img src="Logo1.png" alt="PrimaPay Logo" style={estilos.logo} />
-                    
                     <h2 style={{color: "white", fontSize: "20px", margin: "0 0 10px 0"}}>Simulador de Financiamento</h2>
                     
-                    <label style={estilos.label}>Valor do Crédito</label>
-                    <input style={estilos.input} type="number" placeholder="R$ 0,00" value={valor} onChange={e => setValor(e.target.value)} />
+                    <label style={estilos.label}>Valor do Crédito (R$)</label>
+                    <input 
+                        style={estilos.input} 
+                        type="text" 
+                        placeholder="0,00" 
+                        value={valor} 
+                        onChange={e => setValor(formatarMoeda(e.target.value))} 
+                    />
                     
                     <label style={estilos.label}>Taxa de Juros (Mensal %)</label>
-                    <input style={estilos.input} type="number" placeholder="0,00%" value={taxa} onChange={e => setTaxa(e.target.value)} />
+                    <input 
+                        style={estilos.input} 
+                        type="text" 
+                        placeholder="0,00%" 
+                        value={taxa} 
+                        onChange={e => setTaxa(e.target.value.replace(".", ","))} 
+                    />
                     
                     <label style={estilos.label}>Prazo (Meses)</label>
-                    <input style={estilos.input} type="number" placeholder="Ex: 48" value={meses} onChange={e => setMeses(e.target.value)} />
+                    <input 
+                        style={estilos.input} 
+                        type="number" 
+                        placeholder="Ex: 48" 
+                        value={meses} 
+                        onChange={e => setMeses(e.target.value)} 
+                    />
                     
                     <button style={estilos.btnCalcular} onClick={calcular}>CALCULAR PARCELAS</button>
                     
                     {prestacao && (
                         <div style={estilos.resultado}>
                             <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Valor da Parcela:</div>
-                            <div style={{color: LARANJA, fontSize: "30px", fontWeight: "bold"}}>R$ {prestacao}</div>
+                            <div style={{color: LARANJA, fontSize: "26px", fontWeight: "bold"}}>{prestacao}</div>
                         </div>
                     )}
                     
