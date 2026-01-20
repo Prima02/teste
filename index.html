@@ -11,7 +11,6 @@
     <style>
         body { margin: 0; background-color: #0A0510; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        /* Efeito de clique e hover para os botões */
         .btn-interativo {
             transition: all 0.2s ease;
         }
@@ -42,9 +41,10 @@
             const LARANJA = "#F58634";
             const WHATSAPP_VERDE = "#25D366";
 
+            // TAXAS ATUALIZADAS: 5% e 10%
             const TAXAS = {
-                com: 5.00,
-                sem: 10.00
+                com: 5.0,
+                sem: 10.0
             };
 
             const formatarMoeda = (v) => {
@@ -61,6 +61,8 @@
                 const i = TAXAS[tipoGarantia] / 100;
                 const n = parseInt(meses);
                 if (!pv || !i || !n) return;
+                
+                // Fórmula Price
                 const pmt = pv * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
                 setPrestacao(pmt.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
             };
@@ -104,13 +106,13 @@
                     </div>
                     
                     <label style={estilos.label}>Prazo (Meses)</label>
-                    <input style={estilos.input} type="number" placeholder="Ex: 48" value={meses} onChange={e => setMeses(e.target.value)} />
+                    <input style={estilos.input} type="number" placeholder="Ex: 12" value={meses} onChange={e => setMeses(e.target.value)} />
                     
                     <button className="btn-interativo" style={estilos.btnCalcular} onClick={calcular}>CALCULAR PARCELAS</button>
                     
                     {prestacao && (
                         <div style={estilos.resultado}>
-                            <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Parcela Estimada:</div>
+                            <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Parcela Mensal Estimada:</div>
                             <div style={{color: LARANJA, fontSize: "26px", fontWeight: "bold"}}>{prestacao}</div>
                         </div>
                     )}
