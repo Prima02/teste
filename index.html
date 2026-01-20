@@ -10,7 +10,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { margin: 0; background-color: #0A0510; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        input[type="radio"] { display: none; }
+        
+        /* Efeito de clique e hover para os botões */
+        .btn-interativo {
+            transition: all 0.2s ease;
+        }
+        .btn-interativo:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+        .btn-interativo:active {
+            transform: translateY(1px);
+            filter: brightness(0.9);
+        }
     </style>
 </head>
 <body>
@@ -28,7 +40,7 @@
             const ROXO = "#883CEA";
             const ROSA = "#CE17CF";
             const LARANJA = "#F58634";
-            const WHATSAPP = "#25D366";
+            const WHATSAPP_VERDE = "#25D366";
 
             const TAXAS = {
                 com: 1.49,
@@ -70,9 +82,10 @@
                 btnCalcular: { width: "100%", padding: "16px", marginTop: "25px", borderRadius: "12px", border: "none", background: `linear-gradient(90deg, ${ROXO}, ${ROSA})`, color: "white", fontWeight: "bold", fontSize: "16px", cursor: "pointer" },
                 resultado: { marginTop: "20px", padding: "15px", borderRadius: "12px", background: `${ROXO}15`, border: `1px solid ${ROSA}` },
                 btnWhats: { 
-                    width: "100%", padding: "14px", marginTop: "15px", borderRadius: "12px", border: `2px solid ${WHATSAPP}`, 
-                    background: "transparent", color: WHATSAPP, fontWeight: "bold", cursor: "pointer", fontSize: "15px",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" 
+                    width: "100%", padding: "16px", marginTop: "15px", borderRadius: "12px", border: "none", 
+                    background: WHATSAPP_VERDE, color: "white", fontWeight: "bold", cursor: "pointer", fontSize: "16px",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
+                    boxShadow: "0 4px 15px rgba(37, 211, 102, 0.2)"
                 }
             };
 
@@ -93,7 +106,7 @@
                     <label style={estilos.label}>Prazo (Meses)</label>
                     <input style={estilos.input} type="number" placeholder="Ex: 48" value={meses} onChange={e => setMeses(e.target.value)} />
                     
-                    <button style={estilos.btnCalcular} onClick={calcular}>CALCULAR PARCELAS</button>
+                    <button className="btn-interativo" style={estilos.btnCalcular} onClick={calcular}>CALCULAR PARCELAS</button>
                     
                     {prestacao && (
                         <div style={estilos.resultado}>
@@ -102,8 +115,8 @@
                         </div>
                     )}
                     
-                    <button style={estilos.btnWhats} onClick={abrirWhats}>
-                        <i className="fab fa-whatsapp" style={{fontSize: "20px"}}></i>
+                    <button className="btn-interativo" style={estilos.btnWhats} onClick={abrirWhats}>
+                        <i className="fab fa-whatsapp" style={{fontSize: "22px"}}></i>
                         Falar no WhatsApp
                     </button>
                 </div>
