@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body { margin: 0; background-color: #0A0510; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        input[type="radio"] { display: none; }
     </style>
 </head>
 <body>
@@ -19,7 +20,7 @@
 
         function CalculadoraPrimaPay() {
             const [valor, setValor] = useState("");
-            const [taxa, setTaxa] = useState("");
+            const [tipoGarantia, setTipoGarantia] = useState("com"); // "com" ou "sem"
             const [meses, setMeses] = useState("");
             const [prestacao, setPrestacao] = useState(null);
 
@@ -27,7 +28,12 @@
             const ROSA = "#CE17CF";
             const LARANJA = "#F58634";
 
-            // Formata número para Moeda BRL enquanto digita
+            // Defina aqui as taxas mensais para cada opção
+            const TAXAS = {
+                com: 1.49, // Exemplo: 1,49% ao mês
+                sem: 4.99  // Exemplo: 4,99% ao mês
+            };
+
             const formatarMoeda = (v) => {
                 v = v.replace(/\D/g, "");
                 v = (v / 100).toFixed(2) + "";
@@ -38,9 +44,8 @@
             };
 
             const calcular = () => {
-                // Converte string BRL de volta para número puro para o cálculo
                 const pv = parseFloat(valor.replace(/\./g, "").replace(",", "."));
-                const i = parseFloat(taxa.replace(",", ".")) / 100;
+                const i = TAXAS[tipoGarantia] / 100;
                 const n = parseInt(meses);
 
                 if (!pv || !i || !n) return;
@@ -54,50 +59,55 @@
             const estilos = {
                 card: { background: "#160F24", width: "360px", padding: "30px", borderRadius: "24px", boxShadow: "0 20px 50px rgba(0,0,0,0.7)", textAlign: "center", border: `1px solid ${ROXO}33` },
                 logo: { maxHeight: "60px", marginBottom: "20px" },
-                label: { display: "block", textAlign: "left", color: LARANJA, fontSize: "11px", fontWeight: "bold", marginTop: "15px", marginBottom: "5px", textTransform: "uppercase" },
+                label: { display: "block", textAlign: "left", color: LARANJA, fontSize: "11px", fontWeight: "bold", marginTop: "15px", marginBottom: "8px", textTransform: "uppercase" },
                 input: { width: "100%", padding: "14px", borderRadius: "12px", border: `1px solid ${ROXO}55`, background: "#0A0510", color: "white", fontSize: "16px", boxSizing: "border-box", outline: "none" },
+                selecaoContainer: { display: "flex", gap: "10px", marginTop: "5px" },
+                opcao: (ativo) => ({
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    border: `1px solid ${ativo ? ROSA : ROXO + "44"}`,
+                    background: ativo ? `linear-gradient(45deg, ${ROXO}, ${ROSA})` : "transparent",
+                    color: "white",
+                    transition: "0.3s"
+                }),
                 btnCalcular: { width: "100%", padding: "16px", marginTop: "25px", borderRadius: "12px", border: "none", background: `linear-gradient(90deg, ${ROXO}, ${ROSA})`, color: "white", fontWeight: "bold", fontSize: "16px", cursor: "pointer" },
                 resultado: { marginTop: "20px", padding: "15px", borderRadius: "12px", background: `${ROXO}15`, border: `1px solid ${ROSA}` },
-                btnWhats: { width: "100%", padding: "12px", marginTop: "15px", borderRadius: "12px", border: `2px solid ${LARANJA}`, background: "transparent", color: "white", fontWeight: "bold", cursor: "pointer", fontSize: "14px" }
+                btnWhats: { width: "100%", padding: "12px", marginTop: "15px", borderRadius: "12px", border: `2px solid ${LARANJA}`, background: "transparent", color: "white", fontWeight: "bold", cursor: "pointer" }
             };
 
             return (
                 <div style={estilos.card}>
                     <img src="Logo1.png" alt="PrimaPay Logo" style={estilos.logo} />
-                    <h2 style={{color: "white", fontSize: "20px", margin: "0 0 10px 0"}}>Simulador de Financiamento</h2>
+                    <h2 style={{color: "white", fontSize: "20px", margin: "0 0 10px 0"}}>Simulador de Crédito</h2>
                     
                     <label style={estilos.label}>Valor do Crédito (R$)</label>
-                    <input 
-                        style={estilos.input} 
-                        type="text" 
-                        placeholder="0,00" 
-                        value={valor} 
-                        onChange={e => setValor(formatarMoeda(e.target.value))} 
-                    />
+                    <input style={estilos.input} type="text" placeholder="0,00" value={valor} onChange={e => setValor(formatarMoeda(e.target.value))} />
                     
-                    <label style={estilos.label}>Taxa de Juros (Mensal %)</label>
-                    <input 
-                        style={estilos.input} 
-                        type="text" 
-                        placeholder="0,00%" 
-                        value={taxa} 
-                        onChange={e => setTaxa(e.target.value.replace(".", ","))} 
-                    />
+                    <label style={estilos.label}>Tipo de Crédito</label>
+                    <div style={estilos.selecaoContainer}>
+                        <div style={estilos.opcao(tipoGarantia === "com")} onClick={() => setTipoGarantia("com")}>
+                            COM GARANTIA
+                        </div>
+                        <div style={estilos.opcao(tipoGarantia === "sem")} onClick={() => setTipoGarantia("sem")}>
+                            SEM GARANTIA
+                        </div>
+                    </div>
+                    <div style={{color: "white", fontSize: "11px", opacity: 0.5, textAlign: "left", marginTop: "5px"}}>
+                        Taxa aplicada: {TAXAS[tipoGarantia]}% ao mês
+                    </div>
                     
                     <label style={estilos.label}>Prazo (Meses)</label>
-                    <input 
-                        style={estilos.input} 
-                        type="number" 
-                        placeholder="Ex: 48" 
-                        value={meses} 
-                        onChange={e => setMeses(e.target.value)} 
-                    />
+                    <input style={estilos.input} type="number" placeholder="Ex: 48" value={meses} onChange={e => setMeses(e.target.value)} />
                     
                     <button style={estilos.btnCalcular} onClick={calcular}>CALCULAR PARCELAS</button>
                     
                     {prestacao && (
                         <div style={estilos.resultado}>
-                            <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Valor da Parcela:</div>
+                            <div style={{color: ROSA, fontSize: "12px", marginBottom: "5px"}}>Parcela Estimada:</div>
                             <div style={{color: LARANJA, fontSize: "26px", fontWeight: "bold"}}>{prestacao}</div>
                         </div>
                     )}
