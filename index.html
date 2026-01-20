@@ -3,33 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Financiamento</title>
+    <title>Calculadora PrimaPay</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body style="margin:0; background-color: #1c2541; display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+<body style="margin:0; background: linear-gradient(135deg, #050a14 0%, #0d1b33 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh;">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState } = React;
 
-        function CalculadoraFinanciamento() {
+        function CalculadoraPrimaPay() {
             const [valor, setValor] = useState("");
             const [taxa, setTaxa] = useState("");
             const [meses, setMeses] = useState("");
             const [prestacao, setPrestacao] = useState(null);
 
             const calcular = () => {
-                const pv = parseFloat(valor); // Valor presente
-                const i = parseFloat(taxa) / 100; // Taxa mensal
-                const n = parseInt(meses); // Período em meses
+                const pv = parseFloat(valor);
+                const i = parseFloat(taxa) / 100;
+                const n = parseInt(meses);
 
                 if (!pv || !i || !n) return;
 
-                // Fórmula da Tabela Price: PMT = PV * [(i * (1 + i)^n) / ((1 + i)^n - 1)]
                 const pmt = pv * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
-                
                 setPrestacao(pmt.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
             };
 
@@ -37,92 +35,119 @@
                 window.open("https://wa.me/5531986933166", "_blank");
             };
 
+            const cores = {
+                primaria: "#0d1b33", // Azul Marinho PrimaPay
+                destaque: "#f39c12", // Dourado/Laranja de destaque
+                texto: "#ffffff",
+                sucesso: "#25D366"   // Verde WhatsApp
+            };
+
             const estilos = {
                 container: {
-                    fontFamily: "Arial, sans-serif",
-                    maxWidth: "420px",
+                    fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+                    maxWidth: "400px",
                     width: "90%",
-                    padding: "25px",
-                    borderRadius: "16px",
-                    background: "#0B132B",
-                    color: "white",
-                    boxShadow: "0 10px 25px rgba(0,0,0,.4)",
+                    padding: "30px",
+                    borderRadius: "20px",
+                    background: cores.primaria,
+                    color: cores.texto,
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
                     textAlign: "center",
+                    border: "1px solid rgba(255,255,255,0.1)"
                 },
                 input: {
                     width: "100%",
-                    padding: "12px",
-                    margin: "10px 0",
-                    borderRadius: "8px",
-                    border: "none",
+                    padding: "14px",
+                    margin: "12px 0",
+                    borderRadius: "10px",
+                    border: "1px solid rgba(255,255,255,0.2)",
                     fontSize: "16px",
                     boxSizing: "border-box",
-                    backgroundColor: "white"
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    color: "white",
+                    outline: "none"
                 },
                 label: {
                     display: "block",
                     textAlign: "left",
-                    fontSize: "14px",
+                    fontSize: "13px",
+                    fontWeight: "600",
                     marginBottom: "-5px",
                     marginTop: "10px",
-                    color: "#6FFFE9"
+                    color: cores.destaque,
+                    textTransform: "uppercase",
+                    letterSpacing: "1px"
                 },
-                btn: {
+                btnCalcular: {
                     width: "100%",
-                    padding: "14px",
-                    marginTop: "15px",
-                    borderRadius: "10px",
+                    padding: "16px",
+                    marginTop: "20px",
+                    borderRadius: "12px",
                     border: "none",
                     fontSize: "16px",
                     fontWeight: "bold",
-                    background: "#6FFFE9",
-                    color: "#0B132B",
-                    cursor: "pointer",
-                    transition: "0.3s"
-                },
-                whats: {
-                    marginTop: "12px",
-                    background: "#25D366",
+                    background: `linear-gradient(90deg, ${cores.destaque}, #e67e22)`,
                     color: "white",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 15px rgba(243, 156, 18, 0.3)"
                 },
-                box: {
-                    marginTop: "20px",
-                    padding: "15px",
-                    borderRadius: "10px",
-                    background: "rgba(255,255,255,0.1)",
-                    border: "1px solid #6FFFE9"
+                btnWhats: {
+                    width: "100%",
+                    padding: "14px",
+                    marginTop: "15px",
+                    borderRadius: "12px",
+                    border: `2px solid ${cores.sucesso}`,
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                    background: "transparent",
+                    color: cores.sucesso,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px"
+                },
+                boxResultado: {
+                    marginTop: "25px",
+                    padding: "20px",
+                    borderRadius: "15px",
+                    background: "rgba(255,255,255,0.05)",
+                    borderLeft: `5px solid ${cores.destaque}`
                 }
             };
 
             return (
                 <div style={estilos.container}>
-                    <h2 style={{marginBottom: '20px'}}>Calculadora de Financiamento</h2>
+                    <h2 style={{margin: '0 0 10px 0', fontSize: '24px'}}>Simulador PrimaPay</h2>
+                    <p style={{fontSize: '14px', opacity: 0.8, marginBottom: '20px'}}>Calcule seu financiamento em segundos</p>
                     
-                    <span style={estilos.label}>Valor do Veículo (R$)</span>
-                    <input style={estilos.input} type="number" placeholder="Ex: 10000" value={valor} onChange={e => setValor(e.target.value)} />
+                    <span style={estilos.label}>Valor do Financiamento</span>
+                    <input style={estilos.input} type="number" placeholder="R$ 0,00" value={valor} onChange={e => setValor(e.target.value)} />
                     
-                    <span style={estilos.label}>Taxa de Juros (% ao mês)</span>
-                    <input style={estilos.input} type="number" step="0.01" placeholder="Ex: 1.99" value={taxa} onChange={e => setTaxa(e.target.value)} />
+                    <span style={estilos.label}>Taxa de Juros Mensal (%)</span>
+                    <input style={estilos.input} type="number" step="0.01" placeholder="0,00%" value={taxa} onChange={e => setTaxa(e.target.value)} />
                     
                     <span style={estilos.label}>Prazo (Meses)</span>
                     <input style={estilos.input} type="number" placeholder="Ex: 48" value={meses} onChange={e => setMeses(e.target.value)} />
                     
-                    <button style={estilos.btn} onClick={calcular}>Calcular Prestação</button>
+                    <button style={estilos.btnCalcular} onClick={calcular}>CALCULAR AGORA</button>
                     
                     {prestacao && (
-                        <div style={estilos.box}>
-                            <span style={{fontSize: '14px'}}>Prestação Mensal:</span><br />
-                            <strong style={{fontSize: '24px', color: '#6FFFE9'}}>R$ {prestacao}</strong>
+                        <div style={estilos.boxResultado}>
+                            <span style={{fontSize: '13px', opacity: 0.8}}>Valor da Parcela Mensal:</span><br />
+                            <strong style={{fontSize: '28px', color: cores.destaque}}>R$ {prestacao}</strong>
                         </div>
                     )}
                     
-                    <button style={{...estilos.btn, ...estilos.whats}} onClick={abrirWhats}>Falar no WhatsApp</button>
+                    <button style={estilos.btnWhats} onClick={abrirWhats}>
+                        <span>Falar com Consultor</span>
+                    </button>
                 </div>
             );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<CalculadoraFinanciamento />);
+        root.render(<CalculadoraPrimaPay />);
     </script>
 </body>
 </html>
